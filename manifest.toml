@@ -29,11 +29,11 @@ ram.runtime = "256M"
 
     [install.path]
     type = "path"
-    default = "/morelater"
+    default = "/"
 
     [install.init_main_permission]
     type = "group"
-    default = "visitors"
+    default = "all_users"
 
 [resources]
     [resources.sources.main]
