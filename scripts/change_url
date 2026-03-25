@@ -1,0 +1,14 @@
+#!/bin/bash
+source _common.sh
+source /usr/share/yunohost/helpers
+
+ynh_script_progression "Stopping $app..."
+ynh_systemctl --service="$app" --action="stop" --log_path="/var/log/$app/$app.log"
+
+ynh_script_progression "Updating nginx configuration..."
+ynh_config_change_url_nginx
+
+ynh_script_progression "Starting $app..."
+ynh_systemctl --service="$app" --action="start" --log_path="/var/log/$app/$app.log" --wait_until="Ready"
+
+ynh_script_progression "URL change for $app completed"

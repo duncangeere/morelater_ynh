@@ -1,0 +1,42 @@
+#!/bin/bash
+source _common.sh
+source /usr/share/yunohost/helpers
+
+ynh_script_progression "Setting up source files..."
+ynh_setup_source --dest_dir="$install_dir"
+chown -R "$app:www-data" "$install_dir"
+
+ynh_script_progression "Installing Node.js dependencies..."
+pushd "$install_dir"
+    ynh_hide_warnings corepack enable
+    ynh_hide_warnings ynh_exec_as_app env "PATH=$path_with_nodejs" npm install --production=false
+popd
+
+ynh_script_progression "Building the application..."
+pushd "$install_dir"
+    ynh_hide_warnings ynh_exec_as_app env "PATH=$path_with_nodejs" npm run build
+popd
+
+# Copy standalone build output to install_dir root for the systemd service
+cp -a "$install_dir/.next/standalone/." "$install_dir/"
+cp -rn "$install_dir/.next/static" "$install_dir/.next/static" 2>/dev/null || true
+
+# Ensure data directory exists
+mkdir -p "$data_dir"
+chown -R "$app:$app" "$data_dir"
+
+ynh_script_progression "Configuring system services..."
+ynh_config_add_nginx
+ynh_config_add_systemd
+
+mkdir -p "/var/log/$app"
+touch "/var/log/$app/$app.log"
+chown -R "$app:$app" "/var/log/$app"
+ynh_config_add_logrotate
+
+yunohost service add "$app" --description="MoreLater content calendar" --log="/var/log/$app/$app.log"
+
+ynh_script_progression "Starting $app..."
+ynh_systemctl --service="$app" --action="start" --log_path="/var/log/$app/$app.log" --wait_until="Ready"
+
+ynh_script_progression "Installation of $app completed"

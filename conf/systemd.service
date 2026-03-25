@@ -1,0 +1,39 @@
+[Unit]
+Description=MoreLater content calendar (__APP__)
+After=network.target
+
+[Service]
+Type=simple
+User=__APP__
+Group=__APP__
+WorkingDirectory=__INSTALL_DIR__/
+Environment="PATH=__PATH_WITH_NODEJS__"
+Environment=NODE_ENV=production
+Environment=PORT=__PORT__
+Environment=HOSTNAME=127.0.0.1
+Environment=DATABASE_PATH=__DATA_DIR__/morelater.db
+ExecStart=__NODEJS_DIR__/node server.js
+Restart=on-failure
+
+StandardOutput=append:/var/log/__APP__/__APP__.log
+StandardError=inherit
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=yes
+RestrictRealtime=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+ProtectControlGroups=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+LockPersonality=yes
+ProtectSystem=strict
+SystemCallArchitectures=native
+ReadWritePaths=__DATA_DIR__
+
+[Install]
+WantedBy=multi-user.target
