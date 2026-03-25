@@ -2,13 +2,22 @@
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
-ynh_script_progression "Restoring the app directory..."
-ynh_restore "$install_dir"
-chown -R "$app:www-data" "$install_dir"
-
 ynh_script_progression "Restoring the data directory..."
 ynh_restore "$data_dir"
 chown -R "$app:$app" "$data_dir"
+
+ynh_script_progression "Rebuilding the app from source..."
+ynh_setup_source --dest_dir="$install_dir"
+chown -R "$app:www-data" "$install_dir"
+
+pushd "$install_dir"
+    ynh_hide_warnings corepack enable
+    ynh_hide_warnings ynh_exec_as_app env "PATH=$path_with_nodejs" npm install --production=false
+    ynh_hide_warnings ynh_exec_as_app env "PATH=$path_with_nodejs" npm run build
+popd
+
+cp -a "$install_dir/.next/standalone/." "$install_dir/"
+cp -rn "$install_dir/.next/static" "$install_dir/.next/static" 2>/dev/null || true
 
 ynh_script_progression "Restoring system configurations..."
 ynh_restore "/etc/nginx/conf.d/$domain.d/$app.conf"
