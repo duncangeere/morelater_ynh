@@ -30,6 +30,10 @@ It's recommended to install on a **dedicated subdomain** (e.g. `morelater.yourdo
 - Log rotation
 - URL change support
 
+## ICS Calendar Feed
+
+The ICS endpoint at `/api/calendar.ics` is publicly accessible (no login required), so you can subscribe to it from Apple Calendar, Google Calendar, or any ICS-compatible app. The rest of the app remains behind YunoHost SSO authentication.
+
 ## Known limitations
 
 - The MCP server (for Claude AI integration) is not included in this package.

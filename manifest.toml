@@ -50,6 +50,13 @@ ram.runtime = "256M"
     [resources.permissions]
     main.url = "/"
 
+    [resources.permissions.ics]
+    url = "__DOMAIN____PATH__/api/calendar.ics"
+    allowed = "visitors"
+    auth_header = false
+    show_tile = false
+    protected = true
+
     [resources.ports]
 
     [resources.apt]
