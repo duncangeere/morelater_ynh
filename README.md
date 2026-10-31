@@ -32,7 +32,9 @@ It's recommended to install on a **dedicated subdomain** (e.g. `morelater.yourdo
 
 ## ICS Calendar Feed
 
-The ICS endpoint at `/api/calendar.ics` is publicly accessible (no login required), so you can subscribe to it from Apple Calendar, Google Calendar, or any ICS-compatible app. The rest of the app remains behind YunoHost SSO authentication.
+The ICS endpoint at `/api/calendar.ics` can be reached without a YunoHost login, so you can subscribe to it from Apple Calendar, Google Calendar, or any ICS-compatible app. Because MoreLater has no authentication of its own, nginx only serves the feed to requests carrying a secret token (`?token=…`), generated at install. The full subscription URL is on the app's page in the YunoHost admin panel. The rest of the app remains behind YunoHost SSO authentication.
+
+**Upgrading from `0.1.0~ynh1`:** earlier versions served the feed to anyone with no token. Upgrading generates a token, so the old URL stops working: re-subscribe your calendars with the new URL from the admin panel.
 
 ## Known limitations
 

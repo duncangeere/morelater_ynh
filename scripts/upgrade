@@ -2,6 +2,12 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
+# Installs from before version 0.1.0~ynh2 have no calendar-feed token: create
+# one. Existing installs keep theirs, so subscribed calendars carry on working.
+# Note for anyone upgrading from ~ynh1: the old untokenised feed URL stops
+# working, and calendars need re-subscribing with the URL on the admin page.
+ynh_app_setting_set_default --key=ics_token --value="$(ynh_string_random --length=32)"
+
 ynh_script_progression "Stopping $app..."
 ynh_systemctl --service="$app" --action="stop" --log_path="/var/log/$app/$app.log"
 

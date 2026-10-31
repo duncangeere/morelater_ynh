@@ -2,6 +2,13 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
+# Secret token for the public calendar feed. The nginx config only serves
+# /api/calendar.ics to requests carrying ?token=<this value>; the full
+# subscription URL is shown in the app's admin page (doc/ADMIN.md).
+# Stored as an app setting so upgrades, restores and URL changes keep it.
+ics_token=$(ynh_string_random --length=32)
+ynh_app_setting_set --key=ics_token --value="$ics_token"
+
 ynh_script_progression "Setting up source files..."
 ynh_setup_source --dest_dir="$install_dir"
 chown -R "$app:www-data" "$install_dir"
