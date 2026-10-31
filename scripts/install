@@ -26,7 +26,9 @@ popd
 
 # Copy standalone build output to install_dir root for the systemd service
 cp -a "$install_dir/.next/standalone/." "$install_dir/"
-cp -rn "$install_dir/.next/static" "$install_dir/.next/static" 2>/dev/null || true
+# No further copying needed. A standalone build leaves out .next/static and
+# public/, but because it is unpacked over the original build folder, both
+# are already where its server.js expects them.
 
 # Ensure data directory exists
 mkdir -p "$data_dir"

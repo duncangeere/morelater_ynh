@@ -17,7 +17,9 @@ pushd "$install_dir"
 popd
 
 cp -a "$install_dir/.next/standalone/." "$install_dir/"
-cp -rn "$install_dir/.next/static" "$install_dir/.next/static" 2>/dev/null || true
+# No further copying needed. A standalone build leaves out .next/static and
+# public/, but because it is unpacked over the original build folder, both
+# are already where its server.js expects them.
 
 ynh_script_progression "Restoring system configurations..."
 ynh_restore "/etc/nginx/conf.d/$domain.d/$app.conf"
